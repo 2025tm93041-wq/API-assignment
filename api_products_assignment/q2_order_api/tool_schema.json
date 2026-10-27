@@ -1,0 +1,20 @@
+{
+  "name": "order_api",
+  "description": "Manage orders. action=create_order needs item+quantity; action=get_order needs order_id; action=list_orders needs nothing.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "action":   { "type": "string", "enum": ["create_order", "get_order", "list_orders"] },
+      "item":     { "type": "string", "description": "Item name (create_order)" },
+      "quantity": { "type": "integer", "exclusiveMinimum": 0, "description": "Quantity > 0 (create_order)" },
+      "order_id": { "type": "integer", "minimum": 1, "description": "Order ID (get_order)" }
+    },
+    "required": ["action"],
+    "allOf": [
+      { "if": { "properties": { "action": { "const": "create_order" } } },
+        "then": { "required": ["item", "quantity"] } },
+      { "if": { "properties": { "action": { "const": "get_order" } } },
+        "then": { "required": ["order_id"] } }
+    ]
+  }
+}

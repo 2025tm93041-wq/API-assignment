@@ -1,0 +1,17 @@
+_format_version: "3.0"
+
+services:
+  - name: order-service
+    url: http://127.0.0.1:5000/orders
+    routes:
+      - name: order-route
+        paths:
+          - /api/orders                    # public path on Kong
+        strip_path: true                   # /api/orders/1 -> /orders/1
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 5                        # 5 requests per minute
+          policy: local
+          limit_by: ip
+          hide_client_headers: false       # show X-RateLimit-* headers

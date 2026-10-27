@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package taskmanager;
+
+message Task {
+  int32  id     = 1;
+  string title  = 2;
+  string status = 3;   // "pending" | "in_progress" | "done"
+}
+
+message CreateTaskRequest {
+  string title  = 1;
+  string status = 2;   // optional, defaults to "pending"
+}
+
+message GetTaskRequest {
+  int32 id = 1;
+}
+
+message UpdateTaskRequest {
+  int32  id     = 1;
+  string status = 2;
+}
+
+message ListTasksRequest {}
+
+service TaskService {
+  rpc CreateTask(CreateTaskRequest) returns (Task);                         // unary
+  rpc GetTask(GetTaskRequest) returns (Task);                               // unary
+  rpc ListTasks(ListTasksRequest) returns (stream Task);                    // server-streaming
+  rpc UpdateTaskStatus(UpdateTaskRequest) returns (Task);                   // unary
+  rpc StreamTaskUpdates(stream UpdateTaskRequest) returns (stream Task);    // bidirectional
+}
